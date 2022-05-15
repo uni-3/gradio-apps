@@ -1,5 +1,5 @@
-FROM gitpod/workspace-python-tk-vnc:branch-tk-dev
-#FROM gitpod/workspace-base:latest
+#FROM gitpod/workspace-python-tk-vnc:branch-tk-dev
+FROM gitpod/workspace-base:latest
 
 COPY requirements.txt  ./requirements.txt
 COPY poetry.lock ./poetry.lock
