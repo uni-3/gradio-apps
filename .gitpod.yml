@@ -1,6 +1,6 @@
-github:
-  prebuilds:
-    main: true
+#github:
+#  prebuilds:
+#    main: true
 image:
   file: .gitpod.Dockerfile
 tasks:
