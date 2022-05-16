@@ -2,7 +2,7 @@ github:
   prebuilds:
     main: true
 image:
-  file: gitpod.Dockerfile
+  file: .gitpod.Dockerfile
 tasks:
   - name: install
     before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
