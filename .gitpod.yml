@@ -1,8 +1,9 @@
+#unknownnerror
 #github:
 #  prebuilds:
 #    main: true
-image:
-  file: .gitpod.Dockerfile
+#image:
+#  file: .gitpod.Dockerfile
 tasks:
   - name: install
     #before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
