@@ -7,7 +7,7 @@
 tasks:
   - name: install
     #before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
-    command: pip install poetory && pip install --no-deps -r requirements.txt
+    command: pip install poetry && pip install --no-deps -r requirements.txt
 
 gitConfig:
   alias.st: status
