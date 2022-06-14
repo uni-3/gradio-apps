@@ -2,6 +2,13 @@ from pathlib import Path
 
 from skimage import io, util
 import skimage
+# なぜか知らないがRGBAで読み込まれる
+from skimage.color import rgba2rgb, rgb2gray
+from skimage.feature import (match_descriptors, corner_harris,
+                             corner_peaks, ORB, plot_matches)
+import matplotlib.pyplot as plt
+
+
 
 
 def src_target(img):
@@ -19,14 +26,18 @@ def feat_orb(src, target, n_keypoints):
     https://scikit-image.org/docs/stable/api/skimage.feature.html#skimage.feature.ORB
     detector_extractor1.keypoints[matches[:, 0]]
     """
-    orb1 = skimage.feature.ORB(n_keypoints=n_keypoints)
-    orb2 = skimage.feature.ORB(n_keypoints=n_keypoints)
-    de1 = orb1.detect_and_extract(src)
-    de2 = orb1.detect_and_extract(target)
-    matches = skimage.feature.match_descriptor(
-        de1.descriptors, de2.descriptors)
+    orb = skimage.feature.ORB(n_keypoints=n_keypoints)
+    #orb2 = skimage.feature.ORB(n_keypoints=n_keypoints)
+    orb.detect_and_extract(src)
+    keypoints1 = orb.keypoints
+    descriptors1 = orb.descriptors
+    orb.detect_and_extract(target)
+    keypoints2 = orb.keypoints
+    descriptors2 = orb.descriptors
+    matches = skimage.feature.match_descriptors(
+        descriptors1, descriptors2)
 
-    return de1, de2, mathces
+    return matches, keypoints1, keypoints2
 
 
 def main():
@@ -35,6 +46,25 @@ def main():
     src, target = src_target(img)
     io.imsave(base / "data/src.png", src)
     io.imsave(base / "data/target.png", target)
+    img_src = io.imread(base / "data/src.png")
+    img_target = io.imread(base / "data/target.png")
+
+    matches, keypoints1, keypoints2 = feat_orb(
+        rgb2gray(rgba2rgb(img_src)), rgb2gray(rgba2rgb(img_target)),
+        n_keypoints=1000
+    )
+
+
+    fig, ax = plt.subplots(nrows=2, ncols=1)
+
+    plt.gray()
+
+    plot_matches(ax[0], img_src, img_target, keypoints1, keypoints2, matches12)
+    ax[0].axis('off')
+    ax[0].set_title("src vs. target")
+
+    plt.show()
+
 
 
 if __name__ == '__main__':
