@@ -8,8 +8,7 @@ def upload_img(input_img):
 
 def echo(n):
     return "hello" + n
-
-
+    
 def res(x, y):
     """
     複数ファイルを受け取って処理して、1つのファイルを返すやつ

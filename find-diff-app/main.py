@@ -9,8 +9,6 @@ from skimage.feature import (match_descriptors, corner_harris,
 import matplotlib.pyplot as plt
 
 
-
-
 def src_target(img):
     # mannakade wakeru
     height, width, color = img.shape
@@ -54,17 +52,13 @@ def main():
         n_keypoints=1000
     )
 
+    fig= plt.figure(  )
+    ax = fig.add_subplot()
+    plot_matches(ax, img_src, img_target, keypoints1, keypoints2, matches)
+    ax.axis('off')
+    ax.set_title("src vs. target")
 
-    fig, ax = plt.subplots(nrows=2, ncols=1)
-
-    plt.gray()
-
-    plot_matches(ax[0], img_src, img_target, keypoints1, keypoints2, matches12)
-    ax[0].axis('off')
-    ax[0].set_title("src vs. target")
-
-    plt.show()
-
+    plt.savefig(base/"data/matches.png")
 
 
 if __name__ == '__main__':
