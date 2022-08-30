@@ -104,6 +104,8 @@ def main():
     plt.imshow(diff_img)
     plt.savefig(base / 'data/diff.png')
 
+    # diff_imgをマスク画像として元画像に被せる。透明度を入れるといい感じに
+
 
 if __name__ == '__main__':
     main()
