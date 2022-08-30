@@ -6,9 +6,11 @@ import skimage
 from skimage.color import rgba2rgb, rgb2gray
 from skimage.feature import (match_descriptors, corner_harris,
                              corner_peaks, ORB, plot_matches)
-import matplotlib.pyplot as plt
-
+from skimage.filters import threshold_otsu
 from skimage.util import compare_images
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 base = Path(__file__).parent
 
@@ -17,8 +19,9 @@ def src_target(img):
     # 真ん中で分ける
     height, width, color = img.shape
     w = int(width/2)
-    src = util.crop(img, ((0, 0), (0, w), (0, 0)))
-    target = util.crop(img, ((0, 0), (w, 0), (0, 0)))
+
+    src = util.crop(img, ((0, 0), (40, w), (0, 0)))
+    target = util.crop(img, ((0, 0), (w, 40), (0, 0)))
 
     return src, target
 
@@ -29,7 +32,7 @@ def feat_orb(src, target, n_keypoints):
     detector_extractor1.keypoints[matches[:, 0]]
     """
     orb = skimage.feature.ORB(n_keypoints=n_keypoints)
-    #orb2 = skimage.feature.ORB(n_keypoints=n_keypoints)
+    # orb2 = skimage.feature.ORB(n_keypoints=n_keypoints)
     orb.detect_and_extract(src)
     keypoints1 = orb.keypoints
     descriptors1 = orb.descriptors
@@ -44,7 +47,7 @@ def feat_orb(src, target, n_keypoints):
 
 def match(src, target):
     """
-   2枚の画像の位置合わせを行う。 
+   2枚の画像の位置合わせを行う。
     """
 
     img_src = io.imread(base / "data/src.png")
@@ -83,8 +86,9 @@ def find_diff(src, target):
    差分で間違い部分を強調する
     """
     diff_img = compare_images(src, target, method='diff')
-
-    save_fig(diff_img, name="data/diff.png")
+    # 差分が大きいのを 2値化
+    diff_img = diff_img > np.mean(diff_img) * 2
+    return diff_img
 
 
 def main():
@@ -95,7 +99,10 @@ def main():
 
     img_src = io.imread(base / "data/src.png")
     img_target = io.imread(base / "data/target.png")
-    find_diff(to_gray(img_src), to_gray(img_target))
+    diff_img = find_diff(to_gray(img_src), to_gray(img_target))
+
+    plt.imshow(diff_img)
+    plt.savefig(base / 'data/diff.png')
 
 
 if __name__ == '__main__':
