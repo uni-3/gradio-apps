@@ -30,20 +30,18 @@ b = gr.Blocks()
 
 if __name__ == "__main__":
     with b:
-        gr.Markdown("input audio")
-        with gr.Group():
-            with gr.Box():
-                with gr.Row():
-                    audio = gr.Audio(
-                        label="input audio",
-                        show_label=False,
-                        source="microphone",
-                        type="filepath"
-                    )
+        with gr.Box():
+            with gr.Row():
+                audio = gr.Audio(
+                    label="input audio",
+                    show_label=False,
+                    source="microphone",
+                    type="filepath"
+                )
 
-                button = gr.Button("transcribe")
+            button = gr.Button("transcribe")
 
-            text = gr.TextBox(show_label=False)
-            button.click(inference, inputs=[audio],
-                         outputs=[text])
+        text = gr.Textbox(show_label=False)
+        button.click(inference, inputs=[audio],
+                     outputs=[text])
     b.launch()
