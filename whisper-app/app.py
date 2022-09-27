@@ -1,8 +1,8 @@
 import os
 import gradio as gr
 os.system("pip install git+https://github.com/openai/whisper.git")
-import whisper
 
+import whisper
 
 model = whisper.load_model("small")
 
@@ -12,6 +12,8 @@ def inference(mic=None, audio_file=None):
         audio = whisper.load_audio(mic)
     elif audio_file is not None:
         audio = whisper.load_audio(audio_file)
+    else:
+        print("input is none")
     audio = whisper.pad_or_trim(audio)
 
     mel = whisper.log_mel_spectrogram(audio).to(model.device)
