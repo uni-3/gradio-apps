@@ -2,6 +2,7 @@
 FROM gitpod/workspace-base:latest
 USER gitpod
 
+RUN apt install ffmpeg
 COPY requirements.txt  ./requirements.txt
 COPY poetry.lock ./poetry.lock
 COPY pyproject.toml ./pyproject.toml
