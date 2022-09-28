@@ -7,7 +7,7 @@
 tasks:
   - name: install
     #before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
-    command: sudo apt install ffmpeg && pip install poetry && pip install --no-deps -r requirements.txt
+    command: sudo apt install -y ffmpeg && pip install poetry && pip install --no-deps -r requirements.txt
 
 gitConfig:
   alias.st: status
