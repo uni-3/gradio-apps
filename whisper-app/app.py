@@ -1,8 +1,8 @@
 import whisper
 import os
 import gradio as gr
-os.system("pip install git+https://github.com/openai/whisper.git")
 
+import assets
 
 model = whisper.load_model("small")
 
@@ -28,11 +28,14 @@ def inference(mic=None, audio_file=None):
 
 title = "Whisper"
 
+avail_models = whisper.available_models()
+print("av model", avail_models)
 b = gr.Blocks()
 
 if __name__ == "__main__":
     with b:
-        with gr.Box():
+        with gr.Column():
+            gr.Markdown("### input")
             with gr.Row():
                 audio = gr.Audio(
                     label="input audio",
@@ -42,7 +45,6 @@ if __name__ == "__main__":
                     optional=True
                 )
 
-            with gr.Row():
                 audio_file = gr.Audio(
                     label="input audio",
                     show_label=False,
@@ -50,7 +52,15 @@ if __name__ == "__main__":
                     type="filepath",
                     optional=True
                 )
-            button = gr.Button("transcribe")
+
+            avail_models = whisper.available_models()
+            model = gr.Checkboxgroup(avail_models, label="model")
+
+            with gr.Accordion("settings", open=False):
+                with_timestamp = gh.Checkbox(
+                    label="with timestamp", value=True)
+
+            button = gr.Button(label="transcribe")
 
         text = gr.Textbox(show_label=False, max_lines=10)
         button.click(inference, inputs=[audio, audio_file],
