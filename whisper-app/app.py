@@ -2,10 +2,10 @@ import whisper
 import os
 import gradio as gr
 
-model = whisper.load_model("small")
 
+def inference(mic, audio_file, model_name, without_timestamp):
+    model = whisper.load_model(model_name)
 
-def inference(mic, audio_file, model, without_timestamp):
     if mic is not None:
         audio = whisper.load_audio(mic)
     elif audio_file is not None:
@@ -22,8 +22,7 @@ def inference(mic, audio_file, model, without_timestamp):
         language="ja")
     result = whisper.decode(model, mel, options)
 
-    print(result.tokens)
-    print(result.audio_features)
+    print(result.get("segments"))
     print(result.text)
     return result.text
 
@@ -32,7 +31,7 @@ title = "Whisper"
 
 avail_models = whisper.available_models()
 # 日本語のみ対応のため
-avail_models = [m for m in avail_models if m not in "en"]
+avail_models = [m for m in avail_models if "en" not in m]
 b = gr.Blocks()
 
 if __name__ == "__main__":
@@ -45,7 +44,6 @@ if __name__ == "__main__":
                     show_label=False,
                     source="microphone",
                     type="filepath",
-                    optional=True
                 )
 
                 audio_file = gr.Audio(
@@ -53,13 +51,12 @@ if __name__ == "__main__":
                     show_label=False,
                     source="upload",
                     type="filepath",
-                    optional=True
                 )
 
-            model = gr.Checkbox(avail_models, label="model")
+            model = gr.Radio(avail_models, label="model")
 
             without_timestamp = gr.Checkbox(
-                label="with timestamp", value=True)
+                label="without timestamp", value=False)
 
             button = gr.Button(label="transcribe")
 
