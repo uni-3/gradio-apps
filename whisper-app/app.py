@@ -2,8 +2,6 @@ import whisper
 import os
 import gradio as gr
 
-import assets
-
 model = whisper.load_model("small")
 
 
@@ -22,6 +20,8 @@ def inference(mic=None, audio_file=None):
     options = whisper.DecodingOptions(fp16=False)
     result = whisper.decode(model, mel, options)
 
+    print(result.tokens)
+    print(result.audio_features)
     print(result.text)
     return result.text
 
@@ -29,7 +29,6 @@ def inference(mic=None, audio_file=None):
 title = "Whisper"
 
 avail_models = whisper.available_models()
-print("av model", avail_models)
 b = gr.Blocks()
 
 if __name__ == "__main__":
@@ -53,16 +52,15 @@ if __name__ == "__main__":
                     optional=True
                 )
 
-            avail_models = whisper.available_models()
             model = gr.Checkboxgroup(avail_models, label="model")
 
             with gr.Accordion("settings", open=False):
-                with_timestamp = gh.Checkbox(
+                with_timestamp = gr.Checkbox(
                     label="with timestamp", value=True)
 
             button = gr.Button(label="transcribe")
 
         text = gr.Textbox(show_label=False, max_lines=10)
-        button.click(inference, inputs=[audio, audio_file],
+        button.click(fn=inference, inputs=[audio, audio_file, model, language, with_timestamp],
                      outputs=[text])
     b.launch()
