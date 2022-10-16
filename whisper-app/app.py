@@ -3,7 +3,7 @@ import os
 import gradio as gr
 
 
-def inference(mic, audio_file, model_name, without_timestamp):
+def inference(mic, audio_file, model_name, without_timestamp, is_translate):
     model = whisper.load_model(model_name)
 
     if mic is not None:
@@ -15,16 +15,25 @@ def inference(mic, audio_file, model_name, without_timestamp):
     audio = whisper.pad_or_trim(audio)
     mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
-    #_, probs = model.detect_language(mel)
-    #print(f"Detected language: {max(probs, key=probs.get)}")
+    # _, probs = model.detect_language(mel)
+    # print(f"Detected language: {max(probs, key=probs.get)}")
     options = whisper.DecodingOptions(
         fp16=False, without_timestamps=without_timestamp,
-        language="ja")
-    result = whisper.decode(model, mel, options)
+        language="japanese")
+    # result = whisper.decode(model, mel, options)
+    result = whisper.transcribe(
+        model, audio, verbose=True, language="ja", **options,)
 
     print(result.get("segments"))
-    print(result.text)
-    return result.text
+    # print(result.text)
+    if is_translate:
+        #x = whisper.load_audio(audio)
+        #x = whisper.pad_or_trim(x)
+        #mel = whisper.log_mel_spectrogram(x).to(model.device)
+
+        options = whisper.DecodingOptions(task="translation")
+        translation = whisper.decode(model, mel, options)
+    return result.get("segments"), tranlation.text
 
 
 title = "Whisper"
@@ -58,9 +67,12 @@ if __name__ == "__main__":
             without_timestamp = gr.Checkbox(
                 label="without timestamp", value=False)
 
+            is_translate = gr.Checkbox(
+                label="translate to English", value=False)
             button = gr.Button(label="transcribe")
 
-        text = gr.Textbox(show_label=False, max_lines=10)
-        button.click(fn=inference, inputs=[audio, audio_file, model, without_timestamp],
-                     outputs=[text])
+        transcribe_text = gr.Textbox(show_label=False, max_lines=10)
+        translate_text = gr.Textbox(show_label=False, max_lines=10)
+        button.click(fn=inference, inputs=[audio, audio_file, model, without_timestamp, is_translate],
+                     outputs=[transcribe_text, translate_text])
     b.launch()
