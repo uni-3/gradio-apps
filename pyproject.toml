@@ -9,6 +9,11 @@ python = "^3.11"
 scikit-image = "^0.19.2"
 gradio = "^3.27.0"
 pydantic = "^1.10.7"
+poetry = "^1.1.13"
+transformers = "^4.22.1"
+whisper = {git = "https://github.com/openai/whisper.git", rev="b4308c478217f00436c387694e5e848cc87c7fb5"}
+tqdm = "^4.64.1"
+python-multipart = "^0.0.5"
 
 [tool.poetry.dev-dependencies]
 

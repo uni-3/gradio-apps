@@ -1,0 +1,2 @@
+- refer
+  - https://huggingface.co/spaces/anzorq/openai_whisper_stt/blob/main/app.py
